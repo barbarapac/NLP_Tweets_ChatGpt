@@ -4,7 +4,7 @@ import sqlite3
 from googletrans import Translator
 
 # Carrega o dataset
-dataset = pd.read_csv("DataSet.csv")
+dataset = pd.read_csv("DataSet.csv", index_col=False, low_memory=False)
 
 # Cria um objeto do tradutor
 translator = Translator()
