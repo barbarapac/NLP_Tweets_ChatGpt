@@ -12,9 +12,9 @@ translator = Translator()
 # Função para traduzir o texto
 def translate_text(text):
     # Traduz o texto para o português
-    print("Traduzindo: " + text)
+    # print("Traduzindo: " + text)
     translation = translator.translate(text, src='en', dest='pt')
-    print("Tradução: " + translation.text)
+    # print("Tradução: " + translation.text)
     return translation.text
 
 # Define o limite de traduções por hora
@@ -30,6 +30,7 @@ cur.execute('''
         id ROWID,
         Date TEXT,
         Tweet TEXT,
+        TweetTranslated TEXT,
         Url TEXT,
         User TEXT,
         UserCreated TEXT,
@@ -50,13 +51,14 @@ for index, row in dataset.iterrows():
     
     # Se a linha ainda não foi traduzida, traduz e salva no SQLite
     if data is None:
-        row['Tweet'] = translate_text(str(row['Tweet']))
+        print("Traduzindo linha " + str(index+1) + " de " + str(len(dataset)))
+        row['TweetTranslated'] = translate_text(str(row['Tweet']))
         pd.DataFrame(row).T.to_sql('tweets', conn, if_exists='append', index=False)
         
         # Espera 1 hora após atingir o limite de traduções por hora
-        if (index+1) % limit == 0:
-            print("Esperando 1 hora antes de continuar as traduções...")
-            time.sleep(60*60)
+        # if (index+1) % limit == 0:
+        #     print("Esperando 1 hora antes de continuar as traduções...")
+        #     time.sleep(60*60)
 
 # Fecha a conexão com o banco de dados SQLite
 conn.close()
